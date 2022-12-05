@@ -1,5 +1,11 @@
+import { TextEditorProvider } from '../../hooks/useEditorContext';
+
 function App(): JSX.Element {
-  return <p>Hello, world!</p>;
+  return (
+    <TextEditorProvider>
+
+    </TextEditorProvider>
+  );
 }
 
 export default App;
