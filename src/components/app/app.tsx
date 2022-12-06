@@ -1,4 +1,4 @@
-import { TextEditorProvider } from '../../hooks/useEditorContext';
+import { TextEditorProvider } from '../../hooks/use-editor-context';
 
 function App(): JSX.Element {
   return (
