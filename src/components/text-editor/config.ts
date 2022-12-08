@@ -1,4 +1,6 @@
-// src/TextEditor/config.ts
+import Immutable from 'immutable';
+import { DefaultDraftBlockRenderMap } from 'draft-js';
+
 export enum BlockType {
   /* Заголовки */
   h1 = 'header-one',
@@ -20,3 +22,11 @@ export enum BlockType {
   /* Простой текст */
   default = 'unstyled',
 }
+
+const CUSTOM_BLOCK_RENDER_MAP = Immutable.Map({
+  [BlockType.cite]: {
+    element: 'cite',
+  },
+});
+
+export const BLOCK_RENDER_MAP = DefaultDraftBlockRenderMap.merge(CUSTOM_BLOCK_RENDER_MAP);

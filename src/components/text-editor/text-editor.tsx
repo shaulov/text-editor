@@ -1,6 +1,7 @@
 import { Editor } from 'draft-js';
 import cn from 'classnames';
 import { useEditorApi } from '../../hooks/use-editor-context';
+import { BLOCK_RENDER_MAP } from './config';
 import './text-editor.scss';
 
 type TextEditorProps = {
@@ -16,6 +17,7 @@ function TextEditor({ className }: TextEditorProps): JSX.Element{
         placeholder='Введите Ваш текст'
         editorState={state}
         onChange={onChange}
+        blockRenderMap={BLOCK_RENDER_MAP}
       />
     </div>
   );
