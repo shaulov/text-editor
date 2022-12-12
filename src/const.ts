@@ -19,3 +19,10 @@ export enum BlockType {
   /* Простой текст */
   default = 'unstyled',
 }
+
+export enum InlineStyles {
+  BOLD = 'BOLD',
+  ITALIC = 'ITALIC',
+  UNDERLINE = 'UNDERLINE',
+  ACCENT = 'ACCENT',
+}
