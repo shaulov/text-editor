@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { EditorState, RichUtils } from 'draft-js';
-import { BlockType } from '../const';
+import { BlockType, InlineStyles } from '../const';
 
 export type EditorApi = {
   state: EditorState;
@@ -22,10 +22,21 @@ export function useEditor(html?: string): EditorApi {
     return block.getType() as BlockType;
   }, [state]);
 
+  const toggleInlineStyles = useCallback((inlineStyle: InlineStyles) => {
+    setState((currentState) => RichUtils.toggleInlineStyle(currentState, inlineStyle));
+  }, []);
+
+  const hasInlineStyle = useCallback((inlineStyle: InlineStyles) => {
+    const currentStyle = state.getCurrentInlineStyle();
+    return currentStyle.has(inlineStyle);
+  }, [state]);
+
   return useMemo(() => ({
     state,
     onChange: setState,
     toggleBlockType,
     currentBlockType,
-  }), [state, toggleBlockType, currentBlockType]);
+    toggleInlineStyles,
+    hasInlineStyle,
+  }), [state, toggleBlockType, currentBlockType, toggleInlineStyles, hasInlineStyle]);
 }
