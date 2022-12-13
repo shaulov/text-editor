@@ -19,3 +19,12 @@ export enum BlockType {
   /* Простой текст */
   default = 'unstyled',
 }
+
+export enum InlineStyles {
+  BOLD = 'BOLD',
+  ITALIC = 'ITALIC',
+  UNDERLINE = 'UNDERLINE',
+  ACCENT = 'ACCENT',
+}
+
+export const INLINE_STYLE_CODES = Object.values(InlineStyles);
