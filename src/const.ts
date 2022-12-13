@@ -26,3 +26,5 @@ export enum InlineStyles {
   UNDERLINE = 'UNDERLINE',
   ACCENT = 'ACCENT',
 }
+
+export const INLINE_STYLE_CODES = Object.values(InlineStyles);

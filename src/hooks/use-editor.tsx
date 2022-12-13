@@ -7,6 +7,8 @@ export type EditorApi = {
   onChange: (state: EditorState) => void;
   toggleBlockType: (blockType: BlockType) => void;
   currentBlockType: BlockType;
+  toggleInlineStyle: (inlineStyle: InlineStyles) => void;
+  hasInlineStyle: (inlineStyle: InlineStyles) => boolean;
 }
 
 export function useEditor(html?: string): EditorApi {
@@ -22,7 +24,7 @@ export function useEditor(html?: string): EditorApi {
     return block.getType() as BlockType;
   }, [state]);
 
-  const toggleInlineStyles = useCallback((inlineStyle: InlineStyles) => {
+  const toggleInlineStyle = useCallback((inlineStyle: InlineStyles) => {
     setState((currentState) => RichUtils.toggleInlineStyle(currentState, inlineStyle));
   }, []);
 
@@ -36,7 +38,7 @@ export function useEditor(html?: string): EditorApi {
     onChange: setState,
     toggleBlockType,
     currentBlockType,
-    toggleInlineStyles,
+    toggleInlineStyle,
     hasInlineStyle,
-  }), [state, toggleBlockType, currentBlockType, toggleInlineStyles, hasInlineStyle]);
+  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle]);
 }
