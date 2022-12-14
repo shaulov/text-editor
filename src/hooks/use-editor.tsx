@@ -12,6 +12,8 @@ export type EditorApi = {
   currentBlockType: BlockType;
   toggleInlineStyle: (inlineStyle: InlineStyles) => void;
   hasInlineStyle: (inlineStyle: InlineStyles) => boolean;
+  addLink: (url: string) => void;
+  setEntityData: (entityKey: string, data: Record<string, string>) => void;
 }
 
 export function useEditor(html?: string): EditorApi {
@@ -51,6 +53,15 @@ export function useEditor(html?: string): EditorApi {
     addEntity(EntityType.link, { url }, 'MUTABLE');
   }, [addEntity]);
 
+  const setEntityData = useCallback((entityKey: string, data: Record<string, string>) => {
+    setState((currentState) => {
+      const content = currentState.getCurrentContent();
+      const contentStateUpdated = content.mergeEntityData(entityKey, data);
+
+      return EditorState.push(currentState, contentStateUpdated, 'apply-entity');
+    });
+  }, []);
+
   return useMemo(() => ({
     state,
     onChange: setState,
@@ -59,5 +70,6 @@ export function useEditor(html?: string): EditorApi {
     toggleInlineStyle,
     hasInlineStyle,
     addLink,
-  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink]);
+    setEntityData,
+  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink, setEntityData]);
 }
