@@ -1,6 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
-import { EditorState, RichUtils } from 'draft-js';
-import { BlockType, InlineStyles } from '../const';
+import { EditorState, RichUtils, CompositeDecorator, DraftEntityMutability } from 'draft-js';
+import { BlockType, InlineStyles, EntityType } from '../const';
+import LinkDecorator from '../components/link';
+
+const decorator = new CompositeDecorator([LinkDecorator]);
 
 export type EditorApi = {
   state: EditorState;
@@ -9,10 +12,12 @@ export type EditorApi = {
   currentBlockType: BlockType;
   toggleInlineStyle: (inlineStyle: InlineStyles) => void;
   hasInlineStyle: (inlineStyle: InlineStyles) => boolean;
+  addLink: (url: string) => void;
+  setEntityData: (entityKey: string, data: Record<string, string>) => void;
 }
 
 export function useEditor(html?: string): EditorApi {
-  const [state, setState] = useState(() => EditorState.createEmpty());
+  const [state, setState] = useState(() => EditorState.createEmpty(decorator));
   const toggleBlockType = useCallback((blockType: BlockType) => {
     setState((currentState) => RichUtils.toggleBlockType(currentState, blockType));
   }, []);
@@ -33,6 +38,30 @@ export function useEditor(html?: string): EditorApi {
     return currentStyle.has(inlineStyle);
   }, [state]);
 
+  const addEntity = useCallback((entityType: EntityType, data: Record<string, string>, mutability: DraftEntityMutability) => {
+    setState((currentState) => {
+      const contentState = currentState.getCurrentContent();
+      const contentStateWithEntity = contentState.createEntity(entityType, mutability, data);
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      const newState = EditorState.set(currentState, { currentContent: contentStateWithEntity });
+
+      return RichUtils.toggleLink(newState, newState.getSelection(), entityKey);
+    });
+  }, []);
+
+  const addLink = useCallback((url: string) => {
+    addEntity(EntityType.link, { url }, 'MUTABLE');
+  }, [addEntity]);
+
+  const setEntityData = useCallback((entityKey: string, data: Record<string, string>) => {
+    setState((currentState) => {
+      const content = currentState.getCurrentContent();
+      const contentStateUpdated = content.mergeEntityData(entityKey, data);
+
+      return EditorState.push(currentState, contentStateUpdated, 'apply-entity');
+    });
+  }, []);
+
   return useMemo(() => ({
     state,
     onChange: setState,
@@ -40,5 +69,7 @@ export function useEditor(html?: string): EditorApi {
     currentBlockType,
     toggleInlineStyle,
     hasInlineStyle,
-  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle]);
+    addLink,
+    setEntityData,
+  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink, setEntityData]);
 }
