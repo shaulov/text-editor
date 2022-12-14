@@ -1,6 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
-import { EditorState, RichUtils } from 'draft-js';
+import { EditorState, RichUtils, CompositeDecorator } from 'draft-js';
 import { BlockType, InlineStyles } from '../const';
+import LinkDecorator from '../components/link';
+
+const decorator = new CompositeDecorator([LinkDecorator]);
 
 export type EditorApi = {
   state: EditorState;
@@ -12,7 +15,7 @@ export type EditorApi = {
 }
 
 export function useEditor(html?: string): EditorApi {
-  const [state, setState] = useState(() => EditorState.createEmpty());
+  const [state, setState] = useState(() => EditorState.createEmpty(decorator));
   const toggleBlockType = useCallback((blockType: BlockType) => {
     setState((currentState) => RichUtils.toggleBlockType(currentState, blockType));
   }, []);
