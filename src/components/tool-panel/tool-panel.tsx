@@ -1,4 +1,3 @@
-// import { EditorApi } from '../../hooks/use-editor';
 import { MouseEvent } from 'react';
 import cn from 'classnames';
 import { useEditorApi } from '../../hooks/use-editor-context';
@@ -10,7 +9,17 @@ type ToolPanelProps = {
 }
 
 function ToolPanel({ className }: ToolPanelProps): JSX.Element {
-  const { toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle } = useEditorApi();
+  const { toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink } = useEditorApi();
+  const onAddLinkClickHandle = () => {
+    /* eslint-disable no-alert*/
+    const url = prompt('URL:');
+    /* eslint-enable no-alert */
+
+    if (url) {
+      addLink(url);
+    }
+  };
+
   return (
     <div className={cn('tool-panel', className)}>
       <button
@@ -61,6 +70,7 @@ function ToolPanel({ className }: ToolPanelProps): JSX.Element {
       >
         Простой
       </button>
+
       {INLINE_STYLE_CODES.map((code) => {
         const onMouseDown = (evt: MouseEvent<HTMLButtonElement>): void => {
           evt.preventDefault();
@@ -79,6 +89,13 @@ function ToolPanel({ className }: ToolPanelProps): JSX.Element {
           </button>
         );
       })}
+
+      <button
+        className={cn('tool-panel__item')}
+        onClick={onAddLinkClickHandle}
+      >
+        Link
+      </button>
     </div>
   );
 }
