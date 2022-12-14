@@ -11,7 +11,8 @@ type LinkProps = {
 function Link ({children, contentState, entityKey}: LinkProps): JSX.Element {
   const { setEntityData } = useEditorApi();
   const entity = contentState.getEntity(entityKey);
-  const { url } = entity.getData<ReturnType<string>>();
+  /* eslint-disable-next-line*/
+  const { url }: Record<string, string> = entity.getData();
 
   const onLinkClick = () => {
     /* eslint-disable no-alert*/
