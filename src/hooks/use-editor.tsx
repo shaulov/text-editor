@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { EditorState, RichUtils, CompositeDecorator, DraftEntityMutability } from 'draft-js';
+import { EditorState, RichUtils, CompositeDecorator, DraftEntityMutability, DraftEditorCommand } from 'draft-js';
 import { BlockType, InlineStyles, EntityType } from '../const';
 import LinkDecorator from '../components/link';
 
@@ -14,6 +14,7 @@ export type EditorApi = {
   hasInlineStyle: (inlineStyle: InlineStyles) => boolean;
   addLink: (url: string) => void;
   setEntityData: (entityKey: string, data: Record<string, string>) => void;
+  handleKeyCommand: (command: DraftEditorCommand, editorState: EditorState) => string;
 }
 
 export function useEditor(html?: string): EditorApi {
@@ -62,6 +63,17 @@ export function useEditor(html?: string): EditorApi {
     });
   }, []);
 
+  const handleKeyCommand = useCallback((command: DraftEditorCommand, editorState: EditorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+
+    if (newState) {
+      setState(newState);
+      return 'handled';
+    }
+
+    return 'not-handled';
+  }, []);
+
   return useMemo(() => ({
     state,
     onChange: setState,
@@ -71,5 +83,6 @@ export function useEditor(html?: string): EditorApi {
     hasInlineStyle,
     addLink,
     setEntityData,
-  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink, setEntityData]);
+    handleKeyCommand,
+  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink, setEntityData, handleKeyCommand]);
 }
