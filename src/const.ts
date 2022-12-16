@@ -33,6 +33,6 @@ export enum EntityType {
   link = 'link',
 }
 
-export enum KeyCodes {
+export enum Keys {
   Q = 'q',
 }
