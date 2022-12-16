@@ -32,3 +32,8 @@ export const INLINE_STYLE_CODES = Object.values(InlineStyles);
 export enum EntityType {
   link = 'link',
 }
+
+export enum Keys {
+  q = 'q',
+  u = 'u'
+}

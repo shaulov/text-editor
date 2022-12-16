@@ -9,16 +9,18 @@ type TextEditorProps = {
 }
 
 function TextEditor({ className }: TextEditorProps): JSX.Element{
-  const { state, onChange } = useEditorApi();
+  const editorApi = useEditorApi();
 
   return (
     <div className={cn('text-editor', className)}>
       <Editor
         placeholder='Введите Ваш текст'
-        editorState={state}
-        onChange={onChange}
+        editorState={editorApi.state}
+        onChange={editorApi.onChange}
         blockRenderMap={BLOCK_RENDER_MAP}
         customStyleMap={CUSTOM_STYLE_MAP}
+        handleKeyCommand={editorApi.handleKeyCommand}
+        keyBindingFn={editorApi.handleKeyBinding}
       />
     </div>
   );
