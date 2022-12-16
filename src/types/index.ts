@@ -1,3 +1,3 @@
 import { DraftEditorCommand } from 'draft-js';
 
-export type keyCommand = DraftEditorCommand | 'accent';
+export type KeyCommand = DraftEditorCommand | 'accent';

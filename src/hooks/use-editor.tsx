@@ -1,7 +1,8 @@
-import { useState, useMemo, useCallback } from 'react';
-import { EditorState, RichUtils, CompositeDecorator, DraftEntityMutability, DraftEditorCommand } from 'draft-js';
-import { BlockType, InlineStyles, EntityType } from '../const';
+import { useState, useMemo, useCallback, KeyboardEvent } from 'react';
+import { EditorState, RichUtils, CompositeDecorator, DraftEntityMutability, DraftHandleValue, KeyBindingUtil, getDefaultKeyBinding } from 'draft-js';
 import LinkDecorator from '../components/link';
+import { BlockType, InlineStyles, EntityType, Keys } from '../const';
+import { KeyCommand } from '../types';
 
 const decorator = new CompositeDecorator([LinkDecorator]);
 
@@ -14,7 +15,8 @@ export type EditorApi = {
   hasInlineStyle: (inlineStyle: InlineStyles) => boolean;
   addLink: (url: string) => void;
   setEntityData: (entityKey: string, data: Record<string, string>) => void;
-  handleKeyCommand: (command: DraftEditorCommand, editorState: EditorState) => string;
+  handleKeyCommand: (command: KeyCommand, editorState: EditorState) => DraftHandleValue;
+  handleKeyBinding: (evt: KeyboardEvent) => KeyCommand | null;
 }
 
 export function useEditor(html?: string): EditorApi {
@@ -63,7 +65,12 @@ export function useEditor(html?: string): EditorApi {
     });
   }, []);
 
-  const handleKeyCommand = useCallback((command: DraftEditorCommand, editorState: EditorState) => {
+  const handleKeyCommand = useCallback((command: KeyCommand, editorState: EditorState) => {
+    if (command === 'accent') {
+      toggleInlineStyle(InlineStyles.ACCENT);
+      return 'handled';
+    }
+
     const newState = RichUtils.handleKeyCommand(editorState, command);
 
     if (newState) {
@@ -72,6 +79,14 @@ export function useEditor(html?: string): EditorApi {
     }
 
     return 'not-handled';
+  }, [toggleInlineStyle]);
+
+  const handleKeyBinding = useCallback((evt: KeyboardEvent) => {
+    if (evt.key === Keys.Q && KeyBindingUtil.hasCommandModifier(evt)) {
+      return 'accent';
+    }
+
+    return getDefaultKeyBinding(evt);
   }, []);
 
   return useMemo(() => ({
@@ -84,5 +99,6 @@ export function useEditor(html?: string): EditorApi {
     addLink,
     setEntityData,
     handleKeyCommand,
-  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink, setEntityData, handleKeyCommand]);
+    handleKeyBinding,
+  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink, setEntityData, handleKeyCommand, handleKeyBinding]);
 }
