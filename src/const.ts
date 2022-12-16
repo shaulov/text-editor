@@ -34,5 +34,6 @@ export enum EntityType {
 }
 
 export enum Keys {
-  Q = 'q',
+  q = 'q',
+  u = 'u'
 }

@@ -82,7 +82,7 @@ export function useEditor(html?: string): EditorApi {
   }, [toggleInlineStyle]);
 
   const handleKeyBinding = useCallback((evt: KeyboardEvent) => {
-    if (evt.key === Keys.Q && KeyBindingUtil.hasCommandModifier(evt)) {
+    if (evt.key === Keys.u && KeyBindingUtil.hasCommandModifier(evt)) {
       return 'accent';
     }
 
