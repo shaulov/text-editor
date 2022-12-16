@@ -34,5 +34,5 @@ export enum EntityType {
 }
 
 export enum KeyCodes {
-  Q = 81,
+  Q = 'q',
 }
