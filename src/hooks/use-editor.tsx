@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, KeyboardEvent } from 'react';
 import { EditorState, RichUtils, CompositeDecorator, DraftEntityMutability, DraftHandleValue, KeyBindingUtil, getDefaultKeyBinding } from 'draft-js';
 import LinkDecorator from '../components/link';
+import { stateToHTML } from '../utils/convert';
 import { BlockType, InlineStyles, EntityType, Keys } from '../const';
 import { KeyCommand } from '../types';
 
@@ -17,6 +18,7 @@ export type EditorApi = {
   setEntityData: (entityKey: string, data: Record<string, string>) => void;
   handleKeyCommand: (command: KeyCommand, editorState: EditorState) => DraftHandleValue;
   handleKeyBinding: (evt: KeyboardEvent) => KeyCommand | null;
+  toHtml: () => string;
 }
 
 export function useEditor(html?: string): EditorApi {
@@ -89,6 +91,8 @@ export function useEditor(html?: string): EditorApi {
     return getDefaultKeyBinding(evt);
   }, []);
 
+  const toHtml = useCallback(() => stateToHTML(state.getCurrentContent()), [state]);
+
   return useMemo(() => ({
     state,
     onChange: setState,
@@ -100,5 +104,6 @@ export function useEditor(html?: string): EditorApi {
     setEntityData,
     handleKeyCommand,
     handleKeyBinding,
-  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink, setEntityData, handleKeyCommand, handleKeyBinding]);
+    toHtml,
+  }), [state, toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink, setEntityData, handleKeyCommand, handleKeyBinding, toHtml]);
 }

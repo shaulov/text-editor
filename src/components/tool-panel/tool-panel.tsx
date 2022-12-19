@@ -9,9 +9,9 @@ type ToolPanelProps = {
 }
 
 function ToolPanel({ className }: ToolPanelProps): JSX.Element {
-  const { toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink } = useEditorApi();
+  const { toggleBlockType, currentBlockType, toggleInlineStyle, hasInlineStyle, addLink, toHtml } = useEditorApi();
   const onAddLinkClickHandle = () => {
-    /* eslint-disable no-alert*/
+    /* eslint-disable no-alert */
     const url = prompt('URL:');
     /* eslint-enable no-alert */
 
@@ -95,6 +95,16 @@ function ToolPanel({ className }: ToolPanelProps): JSX.Element {
         onClick={onAddLinkClickHandle}
       >
         Link
+      </button>
+
+      <button
+        className={cn('tool-panel__item')}
+        onClick={() => {
+          /* eslint-disable-next-line */
+          console.log(toHtml());
+        }}
+      >
+        Print
       </button>
     </div>
   );
