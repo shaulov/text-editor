@@ -1,11 +1,9 @@
 import { useState, useMemo, useCallback, KeyboardEvent } from 'react';
 import { EditorState, RichUtils, CompositeDecorator, DraftEntityMutability, DraftHandleValue, KeyBindingUtil, getDefaultKeyBinding } from 'draft-js';
 import LinkDecorator from '../components/link';
-import { stateToHTML } from '../utils/convert';
+import { stateToHTML, HTMLtoState } from '../utils/convert';
 import { BlockType, InlineStyles, EntityType, Keys } from '../const';
 import { KeyCommand } from '../types';
-
-const decorator = new CompositeDecorator([LinkDecorator]);
 
 export type EditorApi = {
   state: EditorState;
@@ -21,8 +19,14 @@ export type EditorApi = {
   toHtml: () => string;
 }
 
+const decorator = new CompositeDecorator([LinkDecorator]);
+
 export function useEditor(html?: string): EditorApi {
-  const [state, setState] = useState(() => EditorState.createEmpty(decorator));
+  const [state, setState] = useState(() =>
+    html
+      ? EditorState.createWithContent(HTMLtoState(html), decorator)
+      : EditorState.createEmpty(decorator)
+  );
   const toggleBlockType = useCallback((blockType: BlockType) => {
     setState((currentState) => RichUtils.toggleBlockType(currentState, blockType));
   }, []);
